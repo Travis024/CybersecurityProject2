@@ -9,6 +9,9 @@
 """
 
 import socket
+from Crypto.Cipher import PKCS1_OAEP
+from Crypto.Cipher import AES
+from Crypto.PublicKey import RSA
 
 host = "localhost"
 port = 10001
@@ -31,8 +34,9 @@ def decrypt_key(session_key):
 
 # Write a function that decrypts a message using the session key
 def decrypt_message(client_message, session_key):
-    # TODO: Implement this function
-    pass
+    cipher = AES.new(session_key) #create cipher we're passing our message through
+    plain_text = cipher.decrypt(client_message) #decrypt message
+    return plain_text
 
 
 # Encrypt a message using the session key
