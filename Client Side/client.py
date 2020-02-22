@@ -24,15 +24,19 @@ def pad_message(message):
 
 # TODO: Generate a cryptographically random AES key
 def generate_key():
-    # TODO: Implement this function
-    pass
+    AES_key = os.urandom(16) #generate 16 byte key
+    return AES_key
 
 
 # Takes an AES session key and encrypts it using the appropriate
 # key and return the value
 def encrypt_handshake(session_key):
-    # TODO: Implement this function
-    pass
+    public_str = open('public_key.pem', 'r').read() #read public key from file (already generated)
+    public_key = RSA.importKey(public_str) #change key from string to RSAobj type
+    cipher = PKCS1_OAEP.new(key=public_key) #create the cipher we will pass our text through
+    cipher_text = cipher.encrypt(session_key) #encrypt the AES key
+    return cipher_text  
+    """this code was successful in my tests so far."""
 
 
 # Encrypts the message using AES. Same as server function
