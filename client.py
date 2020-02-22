@@ -93,10 +93,10 @@ def main():
             print("Couldn't connect to server")
             exit(0)
 
-        encrypted_message=encrypt_message(message, key) //encrypt the username and password
-        send_message(sock, encrypted_message) //send encrypted message to the server
+        encrypted_message=encrypt_message(message, key) #encrypt the username and password
+        send_message(sock, encrypted_message) #send encrypted message to the server
 
-        received = recieve_message(sock).decode() //check to see if authentication was successful
+        received = recieve_message(sock).decode() #check to see if authentication was successful
         print(recieved)
     finally:
         print('closing socket')
