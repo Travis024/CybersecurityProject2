@@ -25,7 +25,7 @@ def pad_message(message):
     return message + " "*((16-len(message))%16)
 
 
-# TODO: Generate a cryptographically random AES key
+
 def generate_key():
     AES_key = os.urandom(16) #generate 16 byte key
     return AES_key
@@ -52,8 +52,9 @@ def encrypt_message(message, session_key):
 
 # Decrypts the message using AES. Same as server function
 def decrypt_message(message, session_key):
-    # TODO: Implement this function
-    pass
+    cipher = AES.new(session_key)
+    plain_text = cipher.decrypt(client_message)
+    return plain_text
 
 
 # Sends a message over TCP
