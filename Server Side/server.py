@@ -21,8 +21,12 @@ def pad_message(message):
 
 # Write a function that decrypts a message using the server's private key
 def decrypt_key(session_key):
-    # TODO: Implement this function
-    pass
+    private_str = open('private_key.pem', 'r').read()
+    private_key = RSA.importKey(private_str)
+    cipher = PKCS1_OAEP.new(key=private_key)
+    plain_text = cipher.decrypt(session_key)
+    return plain_text
+    """this code has passed my tests so far"""
 
 
 # Write a function that decrypts a message using the session key
