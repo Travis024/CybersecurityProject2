@@ -40,9 +40,11 @@ def decrypt_message(client_message, session_key):
 
 
 # Encrypt a message using the session key
-def encrypt_message(message, session_key):
-    # TODO: Implement this function
-    pass
+def encrypt_message(message, session_key): #same as client side
+    cipher = AES.new(session_key)
+    message = pad_message(message)
+    cipher_text = cipher.encrypt(message)
+    return cipher_text
 
 
 # Receive 1024 bytes from the client
