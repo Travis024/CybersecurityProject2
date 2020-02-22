@@ -10,7 +10,10 @@
 
 import socket
 import os
-
+from Crypto.Cipher import PKCS1_OAEP
+from Crypto.Cipher import AES
+from Crypto.PublicKey import RSA
+from binascii import hexlify
 
 host = "localhost"
 port = 10001
@@ -41,8 +44,10 @@ def encrypt_handshake(session_key):
 
 # Encrypts the message using AES. Same as server function
 def encrypt_message(message, session_key):
-    # TODO: Implement this function
-    pass
+    cipher = AES.new(session_key)  #create the cipher we will pass our text through
+    message = pad_message(message) #pad the message so that it's 16 bytes
+    cipher_text = cipher.encrypt(message) #encrypt the message
+    return cipher_text
 
 
 # Decrypts the message using AES. Same as server function
