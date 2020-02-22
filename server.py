@@ -104,17 +104,17 @@ def main():
                 # Receive encrypted message from client
                 ciphertext_message = receive_message(connection)
 
-                # TODO: Decrypt message from client
-                plaintext_message = decrypt_message(ciphertext_message, plaintext_key)
-                # TODO: Split response from user into the username and password
-                bool = verify_hash(plaintext_message.split()[0], plaintext_message.split()[1])
-                # TODO: Encrypt response to client
+
+                plaintext_message = decrypt_message(ciphertext_message, plaintext_key) #decrypt clients username and password
+
+                bool = verify_hash(plaintext_message.split()[0], plaintext_message.split()[1]) #verify that the client entered the right pass
+  
                 plaintext_response = "Password or username incorrect"
                 if (bool):
                     plaintext_response = "User Successfully authenticated!"
-                ciphertext_response=encrypt_message(plaintext_response, plaintext_key)
+                ciphertext_response=encrypt_message(plaintext_response, plaintext_key) 
                 # Send encrypted response
-                send_message(connection, ciphertext_response)
+                send_message(connection, ciphertext_response)#return whether the password was correct or not
             finally:
                 # Clean up the connection
                 connection.close()
