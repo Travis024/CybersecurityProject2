@@ -4,13 +4,23 @@
     Authors: Matt Niemiec and Abigail Fernandes
     The solution contains the same number of lines (plus imports)
 """
+import hashlib
+import os
+import binascii
 
 user = input("Enter a username: ")
 password = input("Enter a password: ")
 
-# TODO: Create a salt and hash the password
-# salt = ???
-# hashed_password = ???
+salt = os.urandom(32) #pulls from /dev/urandom, 32 bytes in size
+string_salt = str(binascii.hexlify(salt))[2:-1] #turns the bytes into a string for storing in passfile.txt. DO NOT want to store as bytes
+
+hashed_password = hashlib.pbkdf2_hmac('sha256', #the hash digest algorithm for HMAC
+                                      password.encode('utf-8'), #convert the password to bytes
+                                      salt, #The salt generated above in bytes
+                                      100000 #Number of iterations - makes the hash algorithm slower
+)
+
+string_hashed_password = str(binascii.hexlify(hashed_password))[2:-1] #again, turns the bytes into a string for storing in passfile.txt
 
 try:
     reading = open("passfile.txt", 'r')
@@ -23,5 +33,5 @@ except FileNotFoundError:
     pass
 
 with open("passfile.txt", 'a+') as writer:
-    writer.write("{0}\t{1}\t{2}\n".format(user, salt, hashed_password))
+    writer.write("{0}\t{1}\t{2}\n".format(user, string_salt, string_hashed_password)) #make sure to store the string versions, NOT byte versions
     print("User successfully added!")

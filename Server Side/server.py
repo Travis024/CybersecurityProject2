@@ -6,12 +6,17 @@
         (Feel free to use more or less, this
         is provided as a sanity check)
     Put your team members' names:
+    Travis Torline
+    Alici Edwards
+    Clint Eisenzimmer
 """
 
 import socket
 from Crypto.Cipher import PKCS1_OAEP
 from Crypto.Cipher import AES
 from Crypto.PublicKey import RSA
+import hashlib
+import binascii
 
 host = "localhost"
 port = 10001
@@ -70,10 +75,17 @@ def verify_hash(user, password):
         reader = open("passfile.txt", 'r')
         for line in reader.read().split('\n'):
             line = line.split("\t")
-            if line[0] == user:
-                # TODO: Generate the hashed password
-                # hashed_password =
-                return hashed_password == line[2]
+
+            if line[0].encode('utf-8') == user: #The username is a string, but encrypted messages are binary. Use the encode method to change str -> binary for checking to make sure the username is correct
+                salt = binascii.unhexlify(line[1]) #Turn the hex string from passfile.txt into bytes for hashing
+                hashed_password = hashlib.pbkdf2_hmac('sha256', #he hash digest algorithm for HMAC
+                                                      password, #the password from the encrypted message
+                                                      salt, #The salt from above
+                                                      100000 #Number of iterations - makes the hash algorithm slower
+                )
+
+                string_hashed_password = str(binascii.hexlify(hashed_password))[2:-1] #Passfile.txt has a hex string stored, so turn the hash we just generated into a hex string before checking
+                return string_hashed_password == line[2] #Checks to make sure that this user is stored in Passfile.txt
         reader.close()
     except FileNotFoundError:
         return False
@@ -109,15 +121,13 @@ def main():
                 # Receive encrypted message from client
                 ciphertext_message = receive_message(connection)
 
-
                 plaintext_message = decrypt_message(ciphertext_message, plaintext_key) #decrypt clients username and password
-
                 bool = verify_hash(plaintext_message.split()[0], plaintext_message.split()[1]) #verify that the client entered the right pass
-  
+
                 plaintext_response = "Password or username incorrect"
                 if (bool):
                     plaintext_response = "User Successfully authenticated!"
-                ciphertext_response=encrypt_message(plaintext_response, plaintext_key) 
+                ciphertext_response=encrypt_message(plaintext_response, plaintext_key)
                 # Send encrypted response
                 send_message(connection, ciphertext_response)#return whether the password was correct or not
             finally:
