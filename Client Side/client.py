@@ -6,6 +6,9 @@
         (Feel free to use more or less, this
         is provided as a sanity check)
     Put your team members' names:
+    Travis Torline
+    Alici Edwards
+    Clint Eisenzimmer
 """
 
 import socket
@@ -38,7 +41,7 @@ def encrypt_handshake(session_key):
     public_key = RSA.importKey(public_str) #change key from string to RSAobj type
     cipher = PKCS1_OAEP.new(key=public_key) #create the cipher we will pass our text through
     cipher_text = cipher.encrypt(session_key) #encrypt the AES key
-    return cipher_text  
+    return cipher_text
     """this code was successful in my tests so far."""
 
 
@@ -53,7 +56,7 @@ def encrypt_message(message, session_key):
 # Decrypts the message using AES. Same as server function
 def decrypt_message(message, session_key):
     cipher = AES.new(session_key)
-    plain_text = cipher.decrypt(client_message)
+    plain_text = cipher.decrypt(message)
     return plain_text
 
 
@@ -101,8 +104,8 @@ def main():
         encrypted_message=encrypt_message(message, key) #encrypt the username and password
         send_message(sock, encrypted_message) #send encrypted message to the server
 
-        received = recieve_message(sock).decode() #check to see if authentication was successful
-        print(recieved)
+        received = decrypt_message(receive_message(sock), key) #check to see if authentication was successful
+        print(received.decode('utf-8')) #The recieved message is in bytes, so decode it into a string
     finally:
         print('closing socket')
         sock.close()
