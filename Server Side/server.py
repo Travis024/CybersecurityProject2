@@ -71,6 +71,9 @@ def send_message(connection, data):
 # checks the stored hash of the password to see if they are equal. It returns
 # True if they are and False if they aren't. The delimiters are newlines and tabs
 def verify_hash(user, password):
+
+    print(user.decode('utf-8') + " " + password.decode('utf-8')) #as shown in the writeup, the server prints the attempted connection
+
     try:
         reader = open("passfile.txt", 'r')
         for line in reader.read().split('\n'):
