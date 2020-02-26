@@ -106,6 +106,18 @@ def main():
 
         received = decrypt_message(receive_message(sock), key) #check to see if authentication was successful
         print(received.decode('utf-8')) #The recieved message is in bytes, so decode it into a string
+        
+        #EXTRA CREDIT
+        if (received.decode('utf-8') == "User Successfully authenticated!"): #if we entered the correct password and username
+            type = input("Are you trying to (r)ead or w(rite): ") #try to read/write to a file
+            s = "write"
+            if (type == 'r'):
+                s = "read"
+            doc = input("Which file would you like to "+ s+" from?")
+            new_message = encrypt_message(doc+' '+type, key) #encrypt file name and if we want to read/write and send
+            send_message(sock, new_message)
+            receive_again = decrypt_message(receive_message(sock), key) #print server response
+            print(receive_again.decode('utf-8'))
     finally:
         print('closing socket')
         sock.close()
