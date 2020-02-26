@@ -21,6 +21,9 @@ import binascii
 host = "localhost"
 port = 10001
 
+clearance = -1
+types = []
+
 
 # A helper function. It may come in handy when performing symmetric encryption
 def pad_message(message):
@@ -88,6 +91,10 @@ def verify_hash(user, password):
                 )
 
                 string_hashed_password = str(binascii.hexlify(hashed_password))[2:-1] #Passfile.txt has a hex string stored, so turn the hash we just generated into a hex string before checking
+                if (string_hashed_password == line[2]): #get user clearance level and document classes for Extra credit
+                    clearance = line[3]
+                    for i in range(4, len(line)):
+                        types.append(line[i])
                 return string_hashed_password == line[2] #Checks to make sure that this user is stored in Passfile.txt
         reader.close()
     except FileNotFoundError:
@@ -133,6 +140,40 @@ def main():
                 ciphertext_response=encrypt_message(plaintext_response, plaintext_key)
                 # Send encrypted response
                 send_message(connection, ciphertext_response)#return whether the password was correct or not
+                
+                #EXTRA CREDIT
+                tosend = 'File not found'
+                if (bool):
+                    message = receive_message(connection) #recieve doc info from user
+                    fileInfo = decrypt_message(message, plaintext_key)
+                    docName, service = fileInfo.split()
+                    reader = open("files.txt", 'r')
+                    level = -1
+                    type = -1
+                    for line in reader.read().split('\n'): #scan through list of files and permissions
+                        if (len(line)>0):
+                            indiv = line.split()
+                            if indiv[0] == docName.decode('utf-8'): #if we find the file
+                                level = indiv[2] #catch clearance level
+                                type = indiv[1]# catch doc class
+                                break
+                    reader.close()
+                    if (level != -1 and type !=-1): #if we did find the file
+                        global types
+                        global clearance
+                        if service.decode('utf-8') == 'r': #if we want to read
+                            if type in types and clearance <= level: #check that file is lower than our clearance and that we have the doc type
+                                tosend = "Permission Granted!"
+                            else:
+                                tosend = "Permission Denied"
+                        if service.decode('utf-8') == 'w': #if we want to write
+                            if clearance >= level and len(types) == 1 and types[0] == type: #check that file is above our clearancce and that we only have that doc type
+                                tosend = "Permission Granted!"
+                            else:
+                                tosend = "Permission Denied"
+                    ciphertext_tosend=encrypt_message(tosend, plaintext_key) #send permission granted, denied or file not found
+                    # Send encrypted response
+                    send_message(connection, ciphertext_tosend)
             finally:
                 # Clean up the connection
                 connection.close()
