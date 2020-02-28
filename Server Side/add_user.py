@@ -12,7 +12,7 @@ user = input("Enter a username: ")
 password = input("Enter a password: ")
 level = input("Enter a clearance level (0 for Top Secret, 1 for Secret, 2 for Confidential, 3 for Unclassified): ") #get MAC info
 docclass = []
-cont = 'y'
+cont = input("Would you like to enter a document class (y or n)?: ")
 while cont == 'y':
     docclass.append(input("Enter a document class (1, 2, or 3): "))
     cont = input("Would you like to enter another document class? (y or n): ")
