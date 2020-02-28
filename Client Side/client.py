@@ -42,7 +42,6 @@ def encrypt_handshake(session_key):
     cipher = PKCS1_OAEP.new(key=public_key) #create the cipher we will pass our text through
     cipher_text = cipher.encrypt(session_key) #encrypt the AES key
     return cipher_text
-    """this code was successful in my tests so far."""
 
 
 # Encrypts the message using AES. Same as server function
@@ -106,7 +105,7 @@ def main():
 
         received = decrypt_message(receive_message(sock), key) #check to see if authentication was successful
         print(received.decode('utf-8')) #The recieved message is in bytes, so decode it into a string
-        
+
         #EXTRA CREDIT
         if (received.decode('utf-8') == "User Successfully authenticated!"): #if we entered the correct password and username
             type = input("Are you trying to (r)ead or w(rite): ") #try to read/write to a file
