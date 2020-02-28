@@ -37,7 +37,6 @@ def decrypt_key(session_key):
     cipher = PKCS1_OAEP.new(key=private_key)
     plain_text = cipher.decrypt(session_key)
     return plain_text
-    """this code has passed my tests so far"""
 
 
 # Write a function that decrypts a message using the session key
