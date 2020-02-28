@@ -140,7 +140,7 @@ def main():
                 ciphertext_response=encrypt_message(plaintext_response, plaintext_key)
                 # Send encrypted response
                 send_message(connection, ciphertext_response)#return whether the password was correct or not
-                
+
                 #EXTRA CREDIT
                 tosend = 'File not found'
                 if (bool):
@@ -162,12 +162,12 @@ def main():
                         global types
                         global clearance
                         if service.decode('utf-8') == 'r': #if we want to read
-                            if type in types and clearance <= level: #check that file is lower than our clearance and that we have the doc type
+                            if type in types and int(clearance) <= int(level): #check that file is lower than our clearance and that we have the doc type
                                 tosend = "Permission Granted!"
                             else:
                                 tosend = "Permission Denied"
                         if service.decode('utf-8') == 'w': #if we want to write
-                            if clearance >= level and len(types) == 1 and types[0] == type: #check that file is above our clearancce and that we only have that doc type
+                            if int(clearance) >= int(level) and len(types) == 1 and types[0] == type: #check that file is above our clearancce and that we only have that doc type
                                 tosend = "Permission Granted!"
                             else:
                                 tosend = "Permission Denied"
