@@ -148,25 +148,26 @@ def main():
                     docName, service = fileInfo.split()
                     reader = open("files.txt", 'r')
                     level = -1
-                    type = -1
+                    type = []
                     for line in reader.read().split('\n'): #scan through list of files and permissions
                         if (len(line)>0):
                             indiv = line.split()
                             if indiv[0] == docName.decode('utf-8'): #if we find the file
-                                level = indiv[2] #catch clearance level
-                                type = indiv[1]# catch doc class
+                                level = indiv[1] #catch clearance level
+                                for i in range(2, len(indiv)):# catch doc class
+                                    type.append(indiv[i])
                                 break
                     reader.close()
-                    if (level != -1 and type !=-1): #if we did find the file
+                    if (level != -1): #if we did find the file
                         global types
                         global clearance
                         if service.decode('utf-8') == 'r': #if we want to read
-                            if type in types and int(clearance) <= int(level): #check that file is lower than our clearance and that we have the doc type
+                            if any(i in type for i in types) and int(clearance) <= int(level): #check that file is lower than our clearance and that we have the doc type
                                 tosend = "Permission Granted!"
                             else:
                                 tosend = "Permission Denied"
                         if service.decode('utf-8') == 'w': #if we want to write
-                            if int(clearance) >= int(level) and len(types) == 1 and types[0] == type: #check that file is above our clearancce and that we only have that doc type
+                            if int(clearance) >= int(level) and all(x in type for x in types): #check that file is above our clearancce and that our doctypes are a subset
                                 tosend = "Permission Granted!"
                             else:
                                 tosend = "Permission Denied"
